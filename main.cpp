@@ -39,6 +39,7 @@ int main() {
     while (str != "#") {
         vector<string> elements;
         vector<string> str1;
+        str.erase(remove(str.begin(),str.end(),' '),str.end());
         //筛选赋值语句
         while (searchEqual(str)) {
             for (int i = 0; i < str.size(); ++i) {
@@ -67,15 +68,12 @@ int main() {
             getline(cin, str);
             elements = init(str, vars, value);
         }
-//        for (int i = 0; i < elements.size(); ++i) {
-//            cout << elements.at(i) + " ";
-//        }
         str1 = transform(elements);
-//        cout << "Reverse Polish Notation: ";
-//        for (const string &string1 : str1) {
-//            cout << string1 << " ";
-//        }
-//        cout << endl;
+        cout << "Reverse Polish Notation: ";
+        for (const string &string1 : str1) {
+            cout << string1 << " ";
+        }
+        cout << endl;
         cout << "result: " << calculate(str1).at(0) << endl;
         getline(cin, str);
     }
@@ -116,7 +114,7 @@ vector<string> transform(vector<string> elements) {
                             } else {
                                 str1.push_back(str2.at(j));
                             }
-                        } else if (str2.at(j) == "(") {
+                        } else if (str2.at(j) == "(" && times != 0) {
                             times--;
                             str2.pop_back();
                         } else {
@@ -196,10 +194,10 @@ string scan(string str) {
     string string1;
     double temp;
     for (int j = 0; j < str.size(); ++j) {
-        if (str.at(j) == 'p' && str.at(j + 1) == 'i') {
+        if (str.at(j) == 'p' && str.at(j + 1) == 'i' && judge(str.at(j + 2))) {
             str.replace(j, 2, to_string(M_PI));
             j++;
-        } else if (str.at(j) == 'e' && str.at(j + 1) != 'x') {
+        } else if (str.at(j) == 'e' && judge(str.at(j + 1))) {
             str.replace(j, 1, to_string(M_E));
             j++;
         }
@@ -387,6 +385,11 @@ vector<string> init(string str, vector<string> vars, vector<double> value) {
             } else {
                 int position = searchVar(str.substr(i, str.size()), vars);
                 if (position != -1) {
+                    for (int j = i; j < str.size(); ++j) {
+                        if (vars.at(position) == str.substr(i, j + 1 - i)) {
+                            i = j;
+                        }
+                    }
                     elements.push_back(to_string(value.at(position)));
                 } else {
                     cout << "wrong input!" << endl << "Please input again: " << endl;
@@ -454,16 +457,16 @@ double multiply(double double1, double double2) {
     int *arr1 = new int[a.size()]();
     int *arr2 = new int[b.size()]();
     int *result = new int[a.size() + b.size()]{};
-    long dot1 = 0;
-    long dot2 = 0;
+    int dot1 = 0;
+    int dot2 = 0;
     int num = 0;
     string str;
-    for (long i = 0; i < a.size() - 1; ++i) {
+    for (int i = 0; i < a.size(); ++i) {
         if (a.at(i) == '.') {
             dot1 = a.size() - 1 - i;
         }
     }
-    for (long i = 0; i < b.size() - 1; ++i) {
+    for (int i = 0; i < b.size(); ++i) {
         if (b.at(i) == '.') {
             dot2 = b.size() - 1 - i;
         }
@@ -524,6 +527,5 @@ double multiply(double double1, double double2) {
     if (num == 1) {
         str.insert(0, 1, '-');
     }
-//    cout << str << endl;
     return stringToNum(str);
 }
