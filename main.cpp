@@ -34,20 +34,30 @@ int main() {
     cout << "(input # to exit)" << endl;
     string str;
     getline(cin, str);
+    vector<string> vars;
+    vector<double> value;
     while (str != "#") {
         vector<string> elements;
         vector<string> str1;
-        vector<string> vars;
-        vector<double> value;
         //筛选赋值语句
         while (searchEqual(str)) {
             for (int i = 0; i < str.size(); ++i) {
                 if (str.at(i) == '=') {
-                    vars.push_back(str.substr(0, i));
-                    elements = init(str.substr(i + 1, str.size()), vars, value);
-                    str1 = transform(elements);
-                    value.push_back(calculate(str1).at(0));
-                    cin >> str;
+                    int position = searchVar(str.substr(0, i), vars);
+                    if (position != -1) {
+                        elements = init(str.substr(i + 1, str.size()), vars, value);
+                        str1 = transform(elements);
+                        value.at(position) = calculate(str1).at(0);
+                        getline(cin, str);
+                        break;
+                    } else {
+                        vars.push_back(str.substr(0, i));
+                        elements = init(str.substr(i + 1, str.size()), vars, value);
+                        str1 = transform(elements);
+                        value.push_back(calculate(str1).at(0));
+                        getline(cin, str);
+                        break;
+                    }
                 }
             }
         }
@@ -61,11 +71,11 @@ int main() {
 //            cout << elements.at(i) + " ";
 //        }
         str1 = transform(elements);
-        cout << "Reverse Polish Notation: ";
-        for (const string& string1 : str1) {
-            cout << string1 << " ";
-        }
-        cout << endl;
+//        cout << "Reverse Polish Notation: ";
+//        for (const string &string1 : str1) {
+//            cout << string1 << " ";
+//        }
+//        cout << endl;
         cout << "result: " << calculate(str1).at(0) << endl;
         getline(cin, str);
     }
@@ -149,7 +159,6 @@ vector<double> calculate(vector<string> str1) {
                 nums.pop_back();
                 nums.push_back(temp);
             } else if (str1.at(i) == "*") {
-                //temp = nums.at(nums.size() - 1) * nums.at(nums.size() - 2);
                 temp = multiply(nums.at(nums.size() - 1), nums.at(nums.size() - 2));
                 nums.pop_back();
                 nums.pop_back();
@@ -189,6 +198,9 @@ string scan(string str) {
     for (int j = 0; j < str.size(); ++j) {
         if (str.at(j) == 'p' && str.at(j + 1) == 'i') {
             str.replace(j, 2, to_string(M_PI));
+            j++;
+        } else if (str.at(j) == 'e' && str.at(j + 1) != 'x') {
+            str.replace(j, 1, to_string(M_E));
             j++;
         }
     }
@@ -249,6 +261,7 @@ string scan(string str) {
             for (int j = i + 3; j < str.size(); ++j) {
                 if (str.at(j) == ')') {
                     temp = exp(stringToNum(str.substr(i + 4, j - i - 4)));
+                    cout << temp << endl;
                     if (temp < 0) {
                         string1.append('(' + to_string(temp) + ')');
                     } else {
@@ -271,10 +284,10 @@ string scan(string str) {
                     break;
                 }
             }
-        } else if (str.at(i) == 'l' && str.at(i + 1) == 'o' && str.at(i + 2) == 'g') {
-            for (int j = i + 3; j < str.size(); ++j) {
+        } else if (str.at(i) == 'l' && str.at(i + 1) == 'g') {
+            for (int j = i + 2; j < str.size(); ++j) {
                 if (str.at(j) == ')') {
-                    temp = log(stringToNum(str.substr(i + 4, j - i - 4)));
+                    temp = log10(stringToNum(str.substr(i + 3, j - i - 3)));
                     if (temp < 0) {
                         string1.append('(' + to_string(temp) + ')');
                     } else {
@@ -284,9 +297,39 @@ string scan(string str) {
                     break;
                 }
             }
-        } else if (str.at(i) == 'p' && str.at(i + 1) == 'i') {
-            string1.append(to_string(M_PI));
-            i = i + 1;
+        } else if (str.at(i) == 'l' && str.at(i + 1) == 'n') {
+            for (int j = i + 2; j < str.size(); ++j) {
+                if (str.at(j) == ')') {
+                    temp = log(stringToNum(str.substr(i + 3, j - i - 3)));
+                    if (temp < 0) {
+                        string1.append('(' + to_string(temp) + ')');
+                    } else {
+                        string1.append(to_string(temp));
+                    }
+                    i = j;
+                    break;
+                }
+            }
+        } else if (str.at(i) == 'l' && str.at(i + 1) == 'o' && str.at(i + 2) == 'g') {
+            double num1 = 0, num2 = 0;
+            int a = 0;
+            for (int j = i + 3; j < str.size(); ++j) {
+                if (str.at(j) == '(') {
+                    num1 = log(stringToNum(str.substr(i + 3, j - i - 3)));
+                    a = j;
+                }
+                if (str.at(j) == ')') {
+                    num2 = log(stringToNum(str.substr(a + 1, j - a - 1)));
+                    temp = num2 / num1;
+                    if (temp < 0) {
+                        string1.append('(' + to_string(temp) + ')');
+                    } else {
+                        string1.append(to_string(temp));
+                    }
+                    i = j;
+                    break;
+                }
+            }
         } else {
             string1.append(1, str.at(i));
         }
@@ -481,5 +524,6 @@ double multiply(double double1, double double2) {
     if (num == 1) {
         str.insert(0, 1, '-');
     }
+//    cout << str << endl;
     return stringToNum(str);
 }
