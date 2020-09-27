@@ -1,5 +1,5 @@
 <h1 align = "center">CS205 C/ C++ Program Design</h1>
-<h2 align = "center">Assignment 1</h2>
+<h2 align = "center">Assignment 2</h2>
 <h4 align = "center">name:刘仁杰 SID：11911808</h4>
 
 ## Part 1. Source Code
@@ -608,18 +608,18 @@ output: corresponding results
 ## Part 3. Difficulties , Solutions and Core Algorithm 
 
 ### 1.core algorithm:
-using vector to imitate the data structure--stack, transform infix notation to Reverse Polish Notation which can be easily calculated from head to tail.
+<table><tr><td bgcolor=PowderBlue>using vector to imitate the data structure--stack, transform infix notation to Reverse Polish Notation which can be easily calculated from head to tail.</td></tr></table>
 
 ### 2.difficulties:
 
 #### 1)define variables:
-use two vectors, one store the variable name and the other store the content, link them with the same index, the var name can not only be a letter, it can also be any word you want!
+<table><tr><td bgcolor=PowderBlue>use two vectors, one store the variable name and the other store the content, link them with the same index, the var name can not only be a letter, it can also be any word you want!</td></tr></table>
 
 #### 2)allow arbitrary blank space when input:
-preprocess the input and erase the blank space
+<table><tr><td bgcolor=PowderBlue>preprocess the input and erase the blank space</td></tr></table>
 
-#### 3)calculate with nagetive numbers:
-preprocess the input and judge the result's negativity
+#### 3)calculate with negative numbers:
+<table><tr><td bgcolor=PowderBlue>preprocess the input and judge the result's negativity</td></tr></table>
 
 #### 4)allow basic math functions(sin, cos, tan, exp, sqrt, lg(以十为底), ln(以e为底), loga(b)(以a为底b的对数)， abs(绝对值))
-we define a new function--scan to preprocess the input string, find the corresponding special functions and pre-calculate it into a numerical value. Especially, when we deal with loga(b), we use loga(b) = ln(b) / ln(a) to solve it!
+<table><tr><td bgcolor=PowderBlue>we define a new function--scan to preprocess the input string, find the corresponding special functions and pre-calculate it into a numerical value. Especially, when we deal with loga(b), we use loga(b) = ln(b) / ln(a) to solve it!</td></tr></table>
